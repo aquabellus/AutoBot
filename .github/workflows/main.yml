@@ -79,15 +79,18 @@ jobs:
         timeout-minutes: 15
         run: |
           coverage run src/aquabot.py
+          mkdir -p report/
+          coverage xml -o report/coverage.xml
 
       - name: Upload Report To CODECOV
         if: always()
         run: |
           bash <(curl -s https://codecov.io/bash)
 
-      - name: Upload Report To CODECY
+      - name: Upload Report To CODACY
         if: always()
         env:
           CODACY_PROJECT_TOKEN: ${{ secrets.CODACY }}
         run: |
-          bash <(curl -Ls https://coverage.codacy.com/get.sh) report
+          bash <(curl -Ls https://coverage.codacy.com/get.sh) report \
+            -l python -r report/coverage.xml
