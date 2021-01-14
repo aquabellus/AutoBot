@@ -196,7 +196,12 @@ if __name__ == "__main__":
 
     buka = open("helper/tumbal.json").read()
     tumbal = json.loads(buka)[uid]
-    
+
+    browserInfo = Browser()
+    browserInfo = browserInfo.driver.capabilities
+    print("Browser: {} {}".format(browserInfo["browserName"], browserInfo["browserVersion"]))
+    print("Webdriver: {}".format(browserInfo["chrome"]["chromedriverVersion"]))
+
     try:
         addFollower()
         time.sleep(5)
