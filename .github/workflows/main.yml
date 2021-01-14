@@ -33,6 +33,13 @@ jobs:
           json: ${{ secrets.SERVER }}
           dir: "helper/"
 
+      - name: Generate Rollbar Token
+        uses: jsdaniell/create-json@1.1.2
+        with:
+          name: "rollbar.json"
+          json: ${{ secrets.ROLLBAR }}
+          dir: "helper/"
+
       - name: Generate Voodoo Account
         uses: jsdaniell/create-json@1.1.2
         with:
