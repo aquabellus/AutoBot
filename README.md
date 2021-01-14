@@ -3,6 +3,8 @@
 ![Build CI](https://github.com/aquabellus/AutoBot/workflows/Build%20CI/badge.svg?branch=1st&event=push)
 [![codecov](https://codecov.io/gh/aquabellus/AutoBot/branch/1st/graph/badge.svg?token=BE9SK3IZ6W)](https://codecov.io/gh/aquabellus/AutoBot)
 [![CodeFactor](https://www.codefactor.io/repository/github/aquabellus/autobot/badge)](https://www.codefactor.io/repository/github/aquabellus/autobot)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/c767736928aa493bb61122b060dc1175)](https://www.codacy.com/gh/aquabellus/AutoBot/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=aquabellus/AutoBot&amp;utm_campaign=Badge_Grade)
 
-## Credit :  
+## Credit
+
 [informatikamu.id](https://ig.informatikamu.id/) for services
