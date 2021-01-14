@@ -11,6 +11,10 @@ import shutil
 import random
 import requests
 import traceback
+import rollbar
+
+rollbarToken = json.loads(open("helper/rollbar.json").read())
+rollbar.init(rollbarToken[0])
 
 browserBin = shutil.which("brave-browser")
 try:
@@ -204,12 +208,19 @@ if __name__ == "__main__":
         time.sleep(5)
         addLike()
     except UnexpectedAlertPresentException as e:
+        errorMessage = "{}\n\n{}".format(e.alert_text, tumbal[1])
+        rollbar.report_message(errorMessage)
         print("\nAn Error Occured:")
         traceback.print_tb(e.__traceback__)
         raise SystemExit(e.alert_text)
     except (IndexError, Exception, SystemError) as e:
+        errorMessage = "{}\n\n{}".format(str(e), tumbal[1])
+        rollbar.report_message(errorMessage)
         print("\nAn Error Occured:")
         traceback.print_tb(e.__traceback__)
         raise SystemExit(str(e))
+    except:
+        rollbar.report_exc_info()
+        raise SystemExit("An Unexpected Error Occured\nCheck On Rollbar App For More Details")
     else:
         print("Script Successfully Executed !!!")
