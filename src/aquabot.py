@@ -130,7 +130,8 @@ listLike = [
 def addFollower():
     if (bool(target["follow"])):
         follower = Browser()
-        for i in range(0, len(listLogin)):
+        for i in server:
+            i-=1
             print("\n")
             print("LOGIN TO {}".format(listLogin[i]))
             url = listFollow[i]
@@ -153,7 +154,8 @@ def addFollower():
 def addLike():
     if (bool(target["like"])):
         like = Browser()
-        for i in range(0, len(listLogin)):
+        for i in server:
+            i-=1
             print("\n")
             print("LOGIN TO {}".format(listLogin[i]))
             url = listLike[i]
@@ -185,6 +187,9 @@ if __name__ == "__main__":
 
     buka = open("helper/helper.json").read()
     uid = json.loads(buka)["id"]
+
+    buka = open("helper/server.json").read()
+    server = json.loads(buka)
 
     buka = open("helper/target.json").read()
     target = json.loads(buka)
