@@ -1,0 +1,64 @@
+name: Build CI
+
+on:
+  push:
+    branches-ignore: [test]
+    paths:
+      - "**/helper.json"
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Cache Check
+        uses: actions/cache@v2
+        env:
+          cache-name: Aquacache-AutoBot
+        with:
+          path: ~/.aquabellus/AutoBot
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('src/aquabot.py') }}
+
+      - name: Generate Voodoo Account
+        uses: jsdaniell/create-json@1.1.2
+        with:
+          name: "tumbal.json"
+          json: ${{ secrets.TUMBAL }}
+          dir: "helper/"
+
+      - name: Generate Target Acount
+        uses: jsdaniell/create-json@1.1.2
+        with:
+          name: "target.json"
+          json: ${{ secrets.TARGET }}
+          dir: "helper/"
+
+      - name: Setup Chromedriver
+        uses: nanasess/setup-chromedriver@v1.0.1
+
+      - name: Setup Python 3
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.x"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Check Files
+        run: |
+          cd helper/
+          ls
+
+      - name: Execute Script
+        timeout-minutes: 15
+        run: |
+          python3 src/aquabot.py
