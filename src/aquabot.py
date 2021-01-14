@@ -109,9 +109,6 @@ class Browser:
         r.close()
         return mediaLink
 
-    def exit(self):
-        self.driver.close()
-
 listLogin = [
     "https://ig.informatikamu.id/member/",
     "https://instagram.informatikamu.id/member/"
