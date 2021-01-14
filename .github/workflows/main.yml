@@ -80,9 +80,14 @@ jobs:
         run: |
           coverage run src/aquabot.py
 
-      - name: Upload Report
+      - name: Upload Report To CODECOV
         if: always()
-        env:
-          CODECOV_TOKEN: 82c25188-b69c-4577-8c93-6bc5637042d1
         run: |
           bash <(curl -s https://codecov.io/bash)
+
+      - name: Upload Report To CODECY
+        if: always()
+        env:
+          CODACY_PROJECT_TOKEN: ${{ secrets.CODACY }}
+        run: |
+          bash <(curl -Ls https://coverage.codacy.com/get.sh) report
