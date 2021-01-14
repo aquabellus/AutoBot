@@ -12,11 +12,11 @@ import random
 import requests
 import traceback
 
-browserBin = shutil.which("google-chrome-stable")
+browserBin = shutil.which("brave-browser")
 try:
     len(browserBin)
 except (TypeError):
-    browserBin = shutil.which("brave-browser")
+    browserBin = shutil.which("google-chrome-stable")
 
 class Browser:
     opt = Options()
