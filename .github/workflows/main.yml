@@ -61,7 +61,6 @@ jobs:
       - name: Execute Script
         timeout-minutes: 15
         run: |
-          pip install coverage
           coverage run src/aquabot.py
 
       - name: Upload Report
