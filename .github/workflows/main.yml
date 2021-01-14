@@ -61,4 +61,11 @@ jobs:
       - name: Execute Script
         timeout-minutes: 15
         run: |
-          python3 src/aquabot.py
+          coverage run src/aquabot.py
+
+      - name: Upload Report
+        if: always()
+        env:
+          CODECOV_TOKEN: 82c25188-b69c-4577-8c93-6bc5637042d1
+        run: |
+          bash <(curl -s https://codecov.io/bash)
