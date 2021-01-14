@@ -26,6 +26,13 @@ jobs:
           path: ~/.aquabellus/AutoBot
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('src/aquabot.py') }}
 
+      - name: Generate Server List
+        uses: jsdaniell/create-json@1.1.2
+        with:
+          name: "server.json"
+          json: ${{ secrets.SERVER }}
+          dir: "helper/"
+
       - name: Generate Voodoo Account
         uses: jsdaniell/create-json@1.1.2
         with:
