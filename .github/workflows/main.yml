@@ -47,8 +47,16 @@ jobs:
           json: ${{ secrets.TARGET }}
           dir: "helper/"
 
+      - name: Update google-chrome-stable
+        run: |
+          sudo apt-get update
+          sudo apt-get upgrade google-chrome-stable -y
+          google-chrome-stable --version
+
       - name: Setup Chromedriver
         uses: nanasess/setup-chromedriver@v1.0.1
+        run: |
+          chromedriver --version
 
       - name: Setup Python 3
         uses: actions/setup-python@v2
