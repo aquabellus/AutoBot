@@ -88,6 +88,7 @@ class Browser:
         if (inputValue == "max"):
             inputValue = int(credit)
 
+        time.sleep(5)
         actionForm = self.driver.find_element_by_xpath(inputActionForm)
         actionForm.clear()
         print("Input Credit: {}".format(inputValue))
