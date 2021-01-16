@@ -2,7 +2,7 @@ name: Build CI
 
 on:
   schedule:
-    - cron: "7 * * * *"
+    - cron: "17 * * * *"
 
   push:
     branches-ignore: [test]
