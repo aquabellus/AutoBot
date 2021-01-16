@@ -19,7 +19,8 @@ try:
     os.mkdir("log/")
 except FileExistsError:
     pass
-logging.basicConfig(filename="log/aqualog.log", filemode="w", level=logging.INFO)
+timecode = time.strftime("%Y%m%d%H%M%S")
+logging.basicConfig(filename="log/{}.log".format(timecode), filemode="w", level=logging.INFO)
 logging.info("START LOG\n{}\n\n".format(time.strftime("%d %b %Y | %H:%M:%S")))
 
 rollbarToken = json.loads(open("helper/rollbar.json").read())
