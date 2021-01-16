@@ -89,6 +89,12 @@ jobs:
         timeout-minutes: 30
         run: |
           coverage run src/aquabot.py
+          coverage xml -o report/aquabot-report.xml
+
+      - name: Send Log Report
+        if: always()
+        run: |
+          python3 src/aquanotif.py
 
       - name: Generate and Upload Report
         if: always()
@@ -96,7 +102,6 @@ jobs:
           CODACY_PROJECT_TOKEN: ${{ secrets.CODACY }}
         run: |
           mkdir -p report/
-          coverage xml -o report/coverage.xml
           bash <(curl -s https://codecov.io/bash)
           bash <(curl -Ls https://coverage.codacy.com/get.sh) report \
-            -l python -r report/coverage.xml
+            -l python -r report/aquabot-report.xml
