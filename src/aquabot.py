@@ -12,6 +12,14 @@ import random
 import requests
 import traceback
 import rollbar
+import logging
+import os
+
+try:
+    os.mkdir("log/")
+except FileExistsError:
+    pass
+logging.basicConfig(filename="log/aqualog.log", filemode="w", level=logging.INFO)
 
 rollbarToken = json.loads(open("helper/rollbar.json").read())
 rollbar.init(rollbarToken[0])
@@ -20,7 +28,7 @@ browserBin = shutil.which("brave-browser")
 try:
     len(browserBin)
 except (TypeError):
-    browserBin = shutil.which("google-chrome-stable")
+    browserBin = shutil.which("google-chrome")
 
 class Browser:
     opt = Options()
@@ -41,7 +49,7 @@ class Browser:
             time.sleep(1)
 
         print("Inputing Username and Password")
-        print("Username ID : {}".format(uid))
+        print("Username ID : {}".format(tumbal[0]))
         print("Username Used : {}".format(tumbal[1]))
         username = self.driver.find_element_by_xpath('//*[@id="username"]')
         username.send_keys(tumbal[1])
@@ -103,7 +111,6 @@ class Browser:
 
         banyakUser = self.driver.find_element_by_xpath('//*[@id="userList"]/p[1]')
         print(banyakUser.text)
-        time.sleep(2)
 
     def getIGMedia(self, username):
         r = requests.get("https://instagram.com/{}/?__a=1".format(username))
@@ -113,6 +120,9 @@ class Browser:
         mediaLink = "https://instagram.com/p/{}/".format(shortcode)
         r.close()
         return mediaLink
+
+    def logout(self):
+        self.driver.delete_all_cookies()
 
 listLogin = [
     "https://ig.informatikamu.id/member/",
@@ -131,8 +141,8 @@ listLike = [
 
 def addFollower():
     if (bool(target["follow"])):
-        follower = Browser()
         for i in server:
+            follower = Browser()
             i-=1
             print("\n")
             print("LOGIN TO {}".format(listLogin[i]))
@@ -146,8 +156,11 @@ def addFollower():
             if (re.search(re.compile(r"instagram"), url)):
                 inputTargetForm = "/html/body/div/div[2]/div[1]/div[3]/div[2]/div/form/div/input"
 
-            follower.login(listLogin[i])
-            follower.add(url, creditID, inputTargetForm, inputTarget, inputActionForm, inputValue, actionButton)
+            try:
+                follower.login(listLogin[i])
+                follower.add(url, creditID, inputTargetForm, inputTarget, inputActionForm, inputValue, actionButton)
+            finally:
+                follower.logout()
 
     else:
         print("Skipping Add Followers Feature")
@@ -171,11 +184,15 @@ def addLike():
 
             inputTarget = like.getIGMedia(target["target"])
             print("Selected Post Media : " + inputTarget)
-            like.login(listLogin[i])
-            like.add(url, creditID, inputTargetForm, inputTarget, inputActionForm, inputValue, actionButton)
+            try:
+                like.login(listLogin[i])
+                like.add(url, creditID, inputTargetForm, inputTarget, inputActionForm, inputValue, actionButton)
+            finally:
+                like.logout()
 
     else:
         print("Skipping Add Likes Feature")
+
 
 if __name__ == "__main__":
     print("####################################################")
@@ -187,9 +204,6 @@ if __name__ == "__main__":
     print("        READ OUR LICENSE FOR MORE DETAILS")
     print("")
 
-    buka = open("helper/helper.json").read()
-    uid = json.loads(buka)["id"]
-
     buka = open("helper/server.json").read()
     server = json.loads(buka)
 
@@ -197,31 +211,34 @@ if __name__ == "__main__":
     target = json.loads(buka)
 
     buka = open("helper/tumbal.json").read()
-    tumbal = json.loads(buka)[uid]
+    daftarTumbal = json.loads(buka)
 
     browserInfo = Browser()
     browserInfo = browserInfo.driver.capabilities
     print("Browser: {} {}".format(browserInfo["browserName"], browserInfo["browserVersion"]))
     print("Webdriver: {}".format(browserInfo["chrome"]["chromedriverVersion"]))
 
-    try:
-        addFollower()
-        time.sleep(5)
-        addLike()
-    except UnexpectedAlertPresentException as e:
-        errorMessage = "{}\n\n{}".format(e.alert_text, tumbal[1])
-        rollbar.report_message(errorMessage)
-        print("\nAn Error Occured:")
-        traceback.print_tb(e.__traceback__)
-        raise SystemExit(e.alert_text)
-    except (IndexError, Exception, SystemError) as e:
-        errorMessage = "{}\n\n{}".format(str(e), tumbal[1])
-        rollbar.report_message(errorMessage)
-        print("\nAn Error Occured:")
-        traceback.print_tb(e.__traceback__)
-        raise SystemExit(str(e))
-    except:
-        rollbar.report_exc_info()
-        raise SystemExit("An Unexpected Error Occured\nCheck On Rollbar App For More Details")
-    else:
-        print("Script Successfully Executed !!!")
+    for i in range(1, len(daftarTumbal)):
+        tumbal = daftarTumbal[i]
+        try:
+            addFollower()
+            time.sleep(5)
+            addLike()
+        except UnexpectedAlertPresentException as e:
+            errorMessage = "{}\n{}".format(tumbal[1], e.alert_text)
+            rollbar.report_message(errorMessage)
+            logging.debug(errorMessage)
+            print("\nAn Error Occured:")
+            traceback.print_tb(e.__traceback__)
+        except (IndexError, Exception, SystemError) as e:
+            errorMessage = "{}\n{}".format(tumbal[1], str(e))
+            rollbar.report_message(errorMessage)
+            logging.info(errorMessage)
+            print("\nAn Error Occured:")
+            traceback.print_tb(e.__traceback__)
+        except:
+            sendLog = rollbar.report_exc_info()
+            errorMessage = "{}\n{}".format(str(sendLog), tumbal[1])
+            logging.debug(errorMessage)
+        else:
+            print("Script Successfully Executed !!!")
