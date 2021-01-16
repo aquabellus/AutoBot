@@ -20,6 +20,7 @@ try:
 except FileExistsError:
     pass
 logging.basicConfig(filename="log/aqualog.log", filemode="w", level=logging.INFO)
+logging.info("START LOG\n{}\n\n".format(time.strftime("%d %b %Y | %H:%M:%S")))
 
 rollbarToken = json.loads(open("helper/rollbar.json").read())
 rollbar.init(rollbarToken[0])
