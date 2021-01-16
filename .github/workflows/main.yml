@@ -1,6 +1,9 @@
 name: Build CI
 
 on:
+  schedule:
+    - cron: "17 * * * *"
+
   push:
     branches-ignore: [test]
     paths:
@@ -83,7 +86,7 @@ jobs:
           ls
 
       - name: Execute Script
-        timeout-minutes: 15
+        timeout-minutes: 30
         run: |
           coverage run src/aquabot.py
 
