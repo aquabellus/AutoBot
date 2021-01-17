@@ -20,13 +20,13 @@ try:
 except FileExistsError:
     pass
 timecode = time.strftime("%Y%m%d%H%M%S")
-logging.basicConfig(filename="log/{}.log".format(timecode), filemode="w", level=logging.INFO)
+logging.basicConfig(filename="log/{}.txt".format(timecode), filemode="w", level=logging.INFO)
 logging.info("START LOG\n{}\n\n".format(time.strftime("%d %b %Y | %H:%M:%S")))
 
 rollbarToken = json.loads(open("helper/rollbar.json").read())
 rollbar.init(rollbarToken[0])
 
-browserBin = shutil.which("brave-browser")
+browserBin = shutil.which("brave")
 try:
     len(browserBin)
 except (TypeError):
@@ -229,18 +229,18 @@ if __name__ == "__main__":
         except UnexpectedAlertPresentException as e:
             errorMessage = "{}\n{}".format(tumbal[1], e.alert_text)
             rollbar.report_message(errorMessage)
-            logging.debug(errorMessage)
+            logging.error(errorMessage)
             print("\nAn Error Occured:")
             traceback.print_tb(e.__traceback__)
         except (IndexError, Exception, SystemError) as e:
             errorMessage = "{}\n{}".format(tumbal[1], str(e))
             rollbar.report_message(errorMessage)
-            logging.info(errorMessage)
+            logging.error(errorMessage)
             print("\nAn Error Occured:")
             traceback.print_tb(e.__traceback__)
         except:
             sendLog = rollbar.report_exc_info()
             errorMessage = "{}\n{}".format(str(sendLog), tumbal[1])
-            logging.debug(errorMessage)
+            logging.error(errorMessage)
         else:
             print("Script Successfully Executed !!!")
