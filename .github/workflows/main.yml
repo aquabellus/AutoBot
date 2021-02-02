@@ -1,8 +1,8 @@
 name: Build CI
 
 on:
-  schedule:
-    - cron: "27,47 * * * *"
+#   schedule:
+#     - cron: "27,47 * * * *"
   push:
     branches-ignore: [test]
     paths:
